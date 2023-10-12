@@ -1,0 +1,35 @@
+name: GHCR Delete Image
+
+description: >
+  Delete images from ghcr.io with different strategies.
+
+author: kksys
+
+branding:
+  icon: delete
+  color: blue
+
+inputs:
+  user:
+    description: >
+      Owner of the package (user)
+    required: true
+
+  name:
+    description: >
+      Name of the package containing the version to delete.
+    required: true
+
+  token:
+    description: >
+      Token with the necessary scopes to delete package versions.
+    required: true
+
+  untagged-keep-latest:
+    description: >
+      Delete all untagged images except the last N
+    required: false
+
+runs:
+  using: "node16"
+  main: "dist/index.js"
