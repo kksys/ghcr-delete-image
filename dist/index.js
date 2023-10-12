@@ -51804,6 +51804,13 @@ async function run() {
         const config = (0, utils_1.getConfig)();
         const octokit = (0, github_1.getOctokit)(config.token);
         if (config.untaggedKeepLatest) {
+            // debug
+            const list = await octokit.rest.packages.listPackagesForUser({
+                username: config.user,
+                package_type: 'container',
+                per_page: 1000
+            });
+            core.info(JSON.stringify(list));
             await (0, actions_1.deleteUntaggedOrderGreaterThan)(config, octokit);
         }
     }
