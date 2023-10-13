@@ -10,15 +10,11 @@ async function run(): Promise<void> {
 
     if (config.untaggedKeepLatest) {
       // debug
-      for await (const response of octokit.paginate.iterator(
-        octokit.rest.packages.listPackagesForUser,
-        {
-          package_type: 'container',
-          username: config.user,
-        }
-      )) {
-        core.info(JSON.stringify(response.data))
-      }
+      const response = await octokit.rest.packages.listPackagesForUser({
+        package_type: 'container',
+        username: config.user,
+      })
+      core.info(JSON.stringify(response.data))
 
       await deleteUntaggedOrderGreaterThan(config, octokit);
     }
