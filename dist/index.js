@@ -51803,7 +51803,12 @@ async function run() {
     try {
         const config = (0, utils_1.getConfig)();
         const octokit = (0, github_1.getOctokit)(config.token);
+        core.info(`user: ${config.user}`);
+        core.info(`name: ${config.name}`);
+        core.info(`token: ${config.token}`);
+        core.info(`untagged-keep-latest: ${config.untaggedKeepLatest}`);
         if (config.untaggedKeepLatest) {
+            core.info('untagged-keep-latest is selected');
             // debug
             const response = await octokit.rest.packages.listPackagesForUser({
                 package_type: 'container',
