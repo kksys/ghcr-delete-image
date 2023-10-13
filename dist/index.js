@@ -51808,7 +51808,6 @@ async function run() {
             for await (const response of octokit.paginate.iterator(octokit.rest.packages.listPackagesForUser, {
                 username: config.user,
                 package_type: 'container',
-                per_page: 1000
             })) {
                 core.info(JSON.stringify(response.data));
             }
