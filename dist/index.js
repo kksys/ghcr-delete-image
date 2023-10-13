@@ -51805,12 +51805,11 @@ async function run() {
         const octokit = (0, github_1.getOctokit)(config.token);
         if (config.untaggedKeepLatest) {
             // debug
-            for await (const response of octokit.paginate.iterator(octokit.rest.packages.listPackagesForUser, {
+            const response = await octokit.rest.packages.listPackagesForUser({
                 package_type: 'container',
                 username: config.user,
-            })) {
-                core.info(JSON.stringify(response.data));
-            }
+            });
+            core.info(JSON.stringify(response.data));
             await (0, actions_1.deleteUntaggedOrderGreaterThan)(config, octokit);
         }
     }
