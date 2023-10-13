@@ -51806,8 +51806,8 @@ async function run() {
         if (config.untaggedKeepLatest) {
             // debug
             for await (const response of octokit.paginate.iterator(octokit.rest.packages.listPackagesForUser, {
-                username: config.user,
                 package_type: 'container',
+                username: config.user,
             })) {
                 core.info(JSON.stringify(response.data));
             }
