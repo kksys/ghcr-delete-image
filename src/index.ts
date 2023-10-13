@@ -15,7 +15,6 @@ async function run(): Promise<void> {
         {
           username: config.user,
           package_type: 'container',
-          per_page: 1000
         }
       )) {
         core.info(JSON.stringify(response.data))
