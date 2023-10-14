@@ -51126,6 +51126,64 @@ exports.deleteUntaggedOrderGreaterThan = deleteUntaggedOrderGreaterThan;
 
 /***/ }),
 
+/***/ 6144:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.iteratePackages = void 0;
+const core = __nccwpck_require__(2186);
+const github_1 = __nccwpck_require__(5438);
+const utils_1 = __nccwpck_require__(1314);
+const actions_1 = __nccwpck_require__(7014);
+const iteratePackages = async function* (octokit, user) {
+    for await (const response of octokit.paginate.iterator(octokit.rest.packages.listPackagesForUser, {
+        package_type: 'container',
+        username: user,
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        }
+    })) {
+        for (let packageVersion of response.data) {
+            yield packageVersion;
+        }
+    }
+};
+exports.iteratePackages = iteratePackages;
+async function run() {
+    try {
+        const config = (0, utils_1.getConfig)();
+        const octokit = (0, github_1.getOctokit)(config.token);
+        octokit.log.info = core.info;
+        octokit.log.error = core.error;
+        octokit.log.warn = core.warning;
+        octokit.log.debug = core.debug;
+        core.info(`user: ${config.user}`);
+        core.info(`name: ${config.name}`);
+        core.info(`token: ${config.token}`);
+        core.info(`untagged-keep-latest: ${config.untaggedKeepLatest}`);
+        if (config.untaggedKeepLatest) {
+            core.info('untagged-keep-latest is selected');
+            // debug
+            for await (const pkgs of (0, exports.iteratePackages)(octokit, config.user)) {
+                core.info(JSON.stringify(pkgs));
+            }
+            await (0, actions_1.deleteUntaggedOrderGreaterThan)(config, octokit);
+        }
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            core.info(JSON.stringify(error, undefined, 2));
+            core.setFailed(error);
+        }
+    }
+}
+run();
+
+
+/***/ }),
+
 /***/ 1314:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -51788,54 +51846,12 @@ module.exports = _unsupportedIterableToArray, module.exports.__esModule = true, 
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-var exports = __webpack_exports__;
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __nccwpck_require__(2186);
-const github_1 = __nccwpck_require__(5438);
-const utils_1 = __nccwpck_require__(1314);
-const actions_1 = __nccwpck_require__(7014);
-async function run() {
-    try {
-        const config = (0, utils_1.getConfig)();
-        const octokit = (0, github_1.getOctokit)(config.token);
-        octokit.log.info = core.info;
-        octokit.log.error = core.error;
-        octokit.log.warn = core.warning;
-        octokit.log.debug = core.debug;
-        core.info(`user: ${config.user}`);
-        core.info(`name: ${config.name}`);
-        core.info(`token: ${config.token}`);
-        core.info(`untagged-keep-latest: ${config.untaggedKeepLatest}`);
-        if (config.untaggedKeepLatest) {
-            core.info('untagged-keep-latest is selected');
-            // debug
-            const response = await octokit.rest.packages.listPackagesForUser({
-                package_type: 'container',
-                username: config.user,
-                headers: {
-                    'X-GitHub-Api-Version': '2022-11-28'
-                }
-            });
-            core.info(JSON.stringify(response.data));
-            await (0, actions_1.deleteUntaggedOrderGreaterThan)(config, octokit);
-        }
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            core.info(JSON.stringify(error, undefined, 2));
-            core.setFailed(error);
-        }
-    }
-}
-run();
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(6144);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
