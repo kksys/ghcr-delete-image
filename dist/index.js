@@ -51817,6 +51817,9 @@ async function run() {
             const response = await octokit.rest.packages.listPackagesForUser({
                 package_type: 'container',
                 username: config.user,
+                headers: {
+                    'X-GitHub-Api-Version': '2022-11-28'
+                }
             });
             core.info(JSON.stringify(response.data));
             await (0, actions_1.deleteUntaggedOrderGreaterThan)(config, octokit);
