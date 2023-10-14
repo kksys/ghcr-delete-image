@@ -7,6 +7,10 @@ async function run(): Promise<void> {
   try {
     const config = getConfig()
     const octokit = getOctokit(config.token)
+    octokit.log.info = core.info
+    octokit.log.error = core.error
+    octokit.log.warn = core.warning
+    octokit.log.debug = core.debug
 
     core.info(`user: ${config.user}`)
     core.info(`name: ${config.name}`)

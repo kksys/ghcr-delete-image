@@ -51803,6 +51803,10 @@ async function run() {
     try {
         const config = (0, utils_1.getConfig)();
         const octokit = (0, github_1.getOctokit)(config.token);
+        octokit.log.info = core.info;
+        octokit.log.error = core.error;
+        octokit.log.warn = core.warning;
+        octokit.log.debug = core.debug;
         core.info(`user: ${config.user}`);
         core.info(`name: ${config.name}`);
         core.info(`token: ${config.token}`);
