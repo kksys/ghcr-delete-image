@@ -3,6 +3,26 @@ import { getOctokit } from '@actions/github'
 import { getConfig } from './utils'
 import { deleteUntaggedOrderGreaterThan } from './actions'
 
+export const iteratePackages = async function* (
+  octokit: ReturnType<typeof getOctokit>,
+  user: string
+) {
+  for await (const response of octokit.paginate.iterator(
+    octokit.rest.packages.listPackagesForUser,
+    {
+      package_type: 'container',
+      username: user,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    }
+  )) {
+    for (let packageVersion of response.data) {
+      yield packageVersion;
+    }
+  }
+}
+
 async function run(): Promise<void> {
   try {
     const config = getConfig()
@@ -20,14 +40,9 @@ async function run(): Promise<void> {
     if (config.untaggedKeepLatest) {
       core.info('untagged-keep-latest is selected')
       // debug
-      const response = await octokit.rest.packages.listPackagesForUser({
-        package_type: 'container',
-        username: config.user,
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28'
-        }
-      })
-      core.info(JSON.stringify(response.data))
+      for await (const pkgs of iteratePackages(octokit, config.user)) {
+        core.info(JSON.stringify(pkgs))
+      }
 
       await deleteUntaggedOrderGreaterThan(config, octokit);
     }
