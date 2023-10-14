@@ -51823,8 +51823,10 @@ async function run() {
         }
     }
     catch (error) {
-        if (error instanceof Error)
+        if (error instanceof Error) {
+            core.info(JSON.stringify(error, undefined, 2));
             core.setFailed(error);
+        }
     }
 }
 run();

@@ -29,8 +29,10 @@ async function run(): Promise<void> {
       await deleteUntaggedOrderGreaterThan(config, octokit);
     }
   } catch (error) {
-    if (error instanceof Error)
+    if (error instanceof Error) {
+      core.info(JSON.stringify(error, undefined, 2))
       core.setFailed(error)
+    }
   }
 }
 
